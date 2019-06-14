@@ -60,11 +60,11 @@ Q_learning2 = [61.665,150.705,228.05,365.69,510.39,663.785]
 Q_learning3 = [59.33,78.26,127.705,116.89,198.965,277.66]
 max = 953.2165
 plt.subplots()
-plt.plot([3,4,5,6,7,8],np.log10(random_choose)/np.log10(max),"-.",label="Random")
-plt.plot([3,4,5,6,7,8],np.log10(brute_force)/np.log10(max),"-o",label="Brute_force")
-plt.plot([3,4,5,6,7,8],np.log10(Q_learning1)/np.log10(max),label="Q_learning(100thousand)")
-plt.plot([3,4,5,6,7,8],np.log10(Q_learning2)/np.log10(max),label="Q_learning(300thousand)")
-plt.plot([3,4,5,6,7,8],np.log10(Q_learning3)/np.log10(max),label="Q_learning(1000thousand)")
+plt.plot([3,4,5,6,7,8],np.log10(random_choose)/np.log10(max),marker=".",linestyle="--",label="Random")
+plt.plot([3,4,5,6,7,8],np.log10(brute_force)/np.log10(max),marker="o",linestyle="--",label="Brute_force")
+plt.plot([3,4,5,6,7,8],np.log10(Q_learning1)/np.log10(max),"v-",label="Q_learning(100thousand)")
+plt.plot([3,4,5,6,7,8],np.log10(Q_learning2)/np.log10(max),"<-",label="Q_learning(300thousand)")
+plt.plot([3,4,5,6,7,8],np.log10(Q_learning3)/np.log10(max),">-",label="Q_learning(1000thousand)")
 # plt.plot([3,4,5,6,7,8],random_choose,"-.",label="Random")
 # plt.plot([3,4,5,6,7,8],brute_force,"-o",label="Brute_force")
 # plt.plot([3,4,5,6,7,8],Q_learning1,label="Q_learning(100thousand)")
@@ -73,10 +73,12 @@ plt.plot([3,4,5,6,7,8],np.log10(Q_learning3)/np.log10(max),label="Q_learning(100
 value = (np.log10(brute_force)/np.log10(max))[0]
 plt.annotate(s=str(round(value,3)),xy=(3,value),xytext=(3,0.7),
              arrowprops={'arrowstyle':'->'})
-plt.xlabel("#task")
-plt.ylabel("consumed_time")
+plt.xlabel("#task",fontdict={'size':15})
+plt.ylabel("consumed_time",fontdict={'size':15})
 plt.xticks([3,4,5,6,7,8])
-plt.legend(loc=2)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.legend(loc=2,prop={'size': 12})
 plt.show()
 
 #输出3000万次状态收敛数和时间变化曲线
@@ -227,86 +229,103 @@ plt.show()
 #     print(hit_1,hit_2)
 
 #输出泊松强度强度与消耗时间图
-# import sys
-# from global_variables import *
-# import randomChoose
-# from task import *
-# import brute
-# tasknumer = 8
-# from maze_env import Maze
-# from RL_brain import QLearningTable
-# if sys.argv[1] == "Random":
-#     parameter["taskNum"] = tasknumer
-#     intensities = [4, 8, 12, 16, 20]
-#     randomTime = []
-#     task = createTask()
-#     for intensity in intensities:
-#         Time = []
-#         parameter["intensity"] = intensity
-#         for i in range(10000):
-#             resetTask(task)
-#             time = randomChoose.doRandom(task)
-#             Time.append(time)
-#         randomTime.append(np.mean(Time))
-#     print("Random time:",randomTime)
-# elif sys.argv[1] == "Brute-force":
-#     intensity = int(sys.argv[2])
-#     parameter["taskNum"] = tasknumer
-#     parameter["intensity"] = intensity
-#     task = createTask()
-#     bruteTime = 0
-#     Time = []
-#     for i in range(100):
-#         resetTask(task)
-#         Time.append(brute.brute_force(task))
-#     bruteTime = np.mean(Time)
-#     print("intensity:",intensity,"bruteTime:",bruteTime)
-# elif sys.argv[1] == "Q_learning":
-#     parameter["taskNum"] = tasknumer
-#     intensity = int(sys.argv[2])
-#     parameter["intensity"] = intensity
+import sys
+from global_variables import *
+import randomChoose
+from task import *
+import brute
+tasknumer = 8
+from maze_env import Maze
+from RL_brain import QLearningTable
+if sys.argv[1] == "Random":
+    parameter["taskNum"] = tasknumer
+    intensities = [4, 8, 12, 16, 20]
+    randomTime = []
+    task = createTask()
+    for intensity in intensities:
+        Time = []
+        parameter["intensity"] = intensity
+        for i in range(10000):
+            resetTask(task)
+            time = randomChoose.doRandom(task)
+            Time.append(time)
+        randomTime.append(np.mean(Time))
+    print("Random time:",randomTime)
+elif sys.argv[1] == "Brute-force":
+    intensity = int(sys.argv[2])
+    parameter["taskNum"] = tasknumer
+    parameter["intensity"] = intensity
+    task = createTask()
+    bruteTime = 0
+    Time = []
+    for i in range(100):
+        resetTask(task)
+        Time.append(brute.brute_force(task))
+    bruteTime = np.mean(Time)
+    print("intensity:",intensity,"bruteTime:",bruteTime)
+elif sys.argv[1] == "Q_learning":
+    parameter["taskNum"] = tasknumer
+    intensity = int(sys.argv[2])
+    parameter["intensity"] = intensity
+    task = createTask()
+    env = Maze(task)
+    RL = QLearningTable(actions=list(range(env.n_actions)))
+    train(env,RL)
+    RL.q_table.to_csv("Q_learning Table" + str(intensity))
+    Q_time = calTime("Q_learning Table" + str(intensity))
+    print("intensity:",intensity,"Q_learning time:",Q_time)
+intensities = [4,6,8,10,12,14]
+randomTime = [710.2185, 951.1735, 1349.6915, 1645.8505, 1759.8135, 1799.751]
+bruteTime = [55.7,113.3,247.1,355.65,411.55,440.5,]
+Q_Time = [189.275,379.477,363.5475,469.862,535.143,614.146]
+
+#任务数量和训练次数
+# training = int(sys.argv[1])
+# tasknum = int(sys.argv[2])
+# if training == 10:
+#     parameter["taskNum"] = tasknum
+#     parameter["intensity"] = 6
 #     task = createTask()
 #     env = Maze(task)
 #     RL = QLearningTable(actions=list(range(env.n_actions)))
-#     train(env,RL)
-#     RL.q_table.to_csv("Q_learning Table" + str(intensity))
-#     Q_time = calTime("Q_learning Table" + str(intensity))
-#     print("intensity:",intensity,"Q_learning time:",Q_time)
-# intensities = [4,6,8,10,12,14]
-# randomTime = [710.2185, 951.1735, 1349.6915, 1645.8505, 1759.8135, 1799.751]
-# bruteTime = [55.7,113.3,247.1,247.1,355.65,411.55,440.5,]
-# Q_Time = [189.275,379.477,363.5475,469.862,535.143,614.146]
+#     train(env,RL,100000)
+#     RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)
+# if training == 30:
+#     parameter["taskNum"] = tasknum
+#     parameter["intensity"] = 6
+#     task = createTask()
+#     env = Maze(task)
+#     RL = QLearningTable(actions=list(range(env.n_actions)))
+#     train(env,RL,300000)
+#     RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)
+# if training == 100:
+#     parameter["taskNum"] = tasknum
+#     parameter["intensity"] = 6
+#     task = createTask()
+#     env = Maze(task)
+#     RL = QLearningTable(actions=list(range(env.n_actions)))
+#     train(env,RL,1000000)
+#     RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
+#     print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)
+#
+# #将两个大实验跑了一下
+# [3,4,5,6,7,8]
+# #10万次
+# Q_learning1 = [199.794,399.2845,435.464,619.9595,700.9,829.568,]
+# #30万次
+# Q_learning2 = [111.5515,107.1015,198.724,435.7295,617.3015,739.763]
+# #100万次
+# Q_learning3 = [51.032,103.634,109.7885,138.45,214.44,260.324]
+# random = [401.178,475.155,605.5105,705.575,846.427,953.2165]
+# brute_force = [43.8,55.05,69.5,79.6,103.95,110.15]
+#
+#
+# [4,8,12,16,20]
+# bruteTime = [49.25,230.75,420.55,446.2,450.0]
+# Q_time = [110.238,525.6155,581.635,525.5395,405.487]
 
-#任务数量和训练次数
-training = int(sys.argv[1])
-tasknum = int(sys.argv[2])
-if training == 10:
-    parameter["taskNum"] = tasknum
-    parameter["intensity"] = 6
-    task = createTask()
-    env = Maze(task)
-    RL = QLearningTable(actions=list(range(env.n_actions)))
-    train(env,RL,100000)
-    RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
-    Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
-    print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)
-if training == 30:
-    parameter["taskNum"] = tasknum
-    parameter["intensity"] = 6
-    task = createTask()
-    env = Maze(task)
-    RL = QLearningTable(actions=list(range(env.n_actions)))
-    train(env,RL,300000)
-    RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
-    Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
-    print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)
-if training == 100:
-    parameter["taskNum"] = tasknum
-    parameter["intensity"] = 6
-    task = createTask()
-    env = Maze(task)
-    RL = QLearningTable(actions=list(range(env.n_actions)))
-    train(env,RL,1000000)
-    RL.q_table.to_csv("Q_learning Table" + str(training)+"_"+str(tasknum))
-    Q_time = calTime("Q_learning Table" + str(training)+"_"+str(tasknum))
-    print("training:",training,"tasknum:",tasknum,"Q_learning time:",Q_time)

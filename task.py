@@ -18,6 +18,7 @@ from matplotlib import pyplot as plt
 from CMP import *
 import random
 import os
+import copy
 def createTask():
     '''
     生成任务，注释部分是随机生成，为了保证整个实验前后一致，我们生成了任务依赖图以后，将其保存为文件，之后从文件中读取，
@@ -91,39 +92,64 @@ def createTask():
     # plt.savefig("task_graph"+str(parameter["taskNum"]))
     return task
 
-def findmax(task):
-    '''
-    将任务依赖图对应为AOE网络，用CPM来寻找最长链（时间最长）
-    :param task:
-    :return:
-    '''
-    Node = []
-    Edge = []
-    assert isinstance(task, networkx.DiGraph)
-    nodes = task.node
-    for node in nodes:
-        adj_node_dict = task[node]
-        for adj_node in adj_node_dict:
-            if adj_node > node:
-                duration = task.get_edge_data(node, adj_node)['weight']
-                Node.append((adj_node,duration))
-                if node != 0:
-                    Edge.append((node,adj_node))
-    # 构建graph
-    G = CPM()
-    for item in Node:
-        G.add_node(item[0], duration=item[1])
+# def findmax(task):
+#     '''
+#     将任务依赖图对应为AOE网络，用CPM来寻找最长链（时间最长）
+#     :param task:
+#     :return:
+#     '''
+#     Node = []
+#     Edge = []
+#     assert isinstance(task, networkx.DiGraph)
+#     nodes = task.node
+#     for node in nodes:
+#         adj_node_dict = task[node]
+#         for adj_node in adj_node_dict:
+#             if adj_node > node:
+#                 duration = task.get_edge_data(node, adj_node)['weight']
+#                 Node.append((adj_node,duration))
+#                 if node != 0:
+#                     Edge.append((node,adj_node))
+#     # 构建graph
+#     G = CPM()
+#     for item in Node:
+#         G.add_node(item[0], duration=item[1])
+#
+#     G.add_edges_from(Edge)
+#     # nx.draw_spring(G,with_labels=True)
+#     # plt.title('AOE网络')
+#     # plt.axis('on')
+#     # plt.xticks([])
+#     # plt.yticks([])
+#     # plt.show()
+#     # print('关键活动为:')
+#     # print(G.critical_path_length, G.critical_path)
+#     return G.critical_path_length
 
-    G.add_edges_from(Edge)
-    # nx.draw_spring(G,with_labels=True)
-    # plt.title('AOE网络')
-    # plt.axis('on')
-    # plt.xticks([])
-    # plt.yticks([])
-    # plt.show()
-    # print('关键活动为:')
-    # print(G.critical_path_length, G.critical_path)
-    return G.critical_path_length
+def findmax(task):
+    maxtime = 0
+    path = []
+    root = 0
+    path.append(root)
+    for node in task.succ[path[-1]]:
+        step(copy.copy(path),node,maxtime)
+    return maxtime
+
+
+def step(path,endNode,maxtime):
+    path.append(endNode)
+    if task.succ[endNode] == {}:
+        #路径结束,计算时间
+        time = 0
+        for i in range(len(path)-1):
+            time+=task.get_edge_data(path[i],path[i+1])['weight']
+        if time > maxtime:
+            maxtime = time
+    else:
+        for node in task.succ[endNode]:
+            step(copy.copy(path),node,maxtime)
+
+
 def resetTask(task):
     assert isinstance(task,networkx.DiGraph)
     nodes = task.node
@@ -137,9 +163,10 @@ def add_edge_time(task,node,time):
     for adj_node in task.pred[node]:
         task.add_weighted_edges_from([(adj_node,node,time)])
 if __name__ == '__main__':
+    parameter["taskNum"] = 8
     task = createTask()
-#     resetTask(task)
-#     findmax(task)
-#     print(task.pred[10])
+    resetTask(task)
+    findmax(task)
+    # print(task.pred[10])
     networkx.draw_spring(task, with_labels=True)
     plt.show()

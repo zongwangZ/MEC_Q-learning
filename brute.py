@@ -101,7 +101,7 @@ def step(task_done,task,Energy,task_intensity):
                 flag = step(copy_task_done,task,Energy-energy,task_intensity)
                 if flag == -1:
                     #说明这条路不通，马上切换下一条路
-                    break
+                    continue
         elif way == 2:
             for energy in energies[1]:
                 time = edgeServer.calTime(task.node[serial_number]["data_size"],energy,task_intensity[serial_number-1])
@@ -113,7 +113,7 @@ def step(task_done,task,Energy,task_intensity):
                 flag = step(copy_task_done, task, Energy - energy,task_intensity)
                 if flag == -1:
                     # 说明这条路不通，马上切换下一条路
-                    break
+                    continue
         elif way == 3:
             for energy in energies[1]:
                 time = cloudServer.calTime(task.node[serial_number]["data_size"],task.node[serial_number]["computing_circle"],energy)
@@ -125,21 +125,20 @@ def step(task_done,task,Energy,task_intensity):
                 flag = step(copy_task_done, task, Energy - energy,task_intensity)
                 if flag == -1:
                     # 说明这条路不通，马上切换下一条路
-                    break
+                    continue
     return 0
 def doSim():
-    parameter["taskNum"] = 3
+    parameter["taskNum"] = 8
     task = createTask()
     minTime = brute_force(task)
     print(minTime)
 if __name__ == '__main__':
-    # task = createTask()
-    # bruteTime = []
-    # Time2 = []
-    # for i in range(100):
-    #     resetTask(task)
-    #     Time2.append(brute_force(task))
-    # bruteTime.append(np.mean(Time2))
-    # print(bruteTime)
-    parameter["intensity"] = 8
-    chooseIntensity()
+    parameter["taskNum"] = 8
+    task = createTask()
+    bruteTime = []
+    Time2 = []
+    for i in range(100):
+        resetTask(task)
+        Time2.append(brute_force(task))
+    bruteTime.append(np.mean(Time2))
+    print(bruteTime)
