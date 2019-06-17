@@ -29,7 +29,11 @@ class cloudServer:
         # cs_time = tr_delay+cs_delay+self.tr_rtt
         # return cs_time
         #此处直接返回固定值
-        return 100
+        if energy == parameter["energies"][1][0]:
+            tr_delay = 0
+        elif energy == parameter["energies"][1][1]:
+            tr_delay = 20
+        return 100+tr_delay
 
 if __name__ == '__main__':
     pass

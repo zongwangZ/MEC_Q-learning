@@ -126,6 +126,10 @@ def createTask():
 #     # print(G.critical_path_length, G.critical_path)
 #     return G.critical_path_length
 
+
+'''
+计算完成整个任务的最短时间
+'''
 def findmax(task):
     global maxtime
     maxtime = 0
@@ -151,6 +155,42 @@ def step(task,path,endNode):
         for node in task.succ[endNode]:
             step(task,copy.copy(path),node)
 
+
+'''
+计算第t步的应用累计完成时间
+'''
+def calOmegaT(task,CTaksQueue):
+    """
+
+    :param task:
+    :param CTaksQueue
+    :return:
+    """
+
+    task_done = []
+    ctask = CTaksQueue.astype(int)
+    task_queue = list(bin(ctask)[2:])
+    task_queue.reverse()
+    for index in range(len(task_queue)):
+        if task_queue[index] == "1":
+            task_done.append(index+1)
+    #1. 计算Gammai  任务链时间
+    Gamma_I = []
+    for node in task_done:
+        gamma_i = calGammaI(task,node)
+        Gamma_I.append(gamma_i)
+    OmegaT = max(Gamma_I)
+    return OmegaT
+
+def calGammaI(task,node):
+    if node == 0:
+        return 0
+    assert isinstance(task,networkx.DiGraph)
+    pre_time = []
+    for pre_node in task.pred[node]:
+        pre_time.append(calGammaI(task,pre_node))
+    gamma_i = max(pre_time) + task.get_edge_data(pre_node,node)["weight"]
+    return gamma_i
 
 def resetTask(task):
     assert isinstance(task,networkx.DiGraph)

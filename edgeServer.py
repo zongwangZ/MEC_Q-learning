@@ -34,10 +34,14 @@ class edgeServer:
         # es_time = tr_delay + es_delay + self.tr_rtt
         # return es_time
         #这里我们做了简化，突出服务器任务数量对处理时间影响程度
+        if energy == parameter["energies"][1][0]:
+            tr_delay = 0
+        elif energy == parameter["energies"][1][1]:
+            tr_delay = 20
         if es_intensity < 8:
-            return 5
+            return 5+tr_delay
         if es_intensity >= 8 :
-            return 500
+            return 500+tr_delay
 
 if __name__ == '__main__':
     edgeServer = edgeServer()

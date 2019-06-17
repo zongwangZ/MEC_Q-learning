@@ -447,7 +447,7 @@ def printLog():
     plt.show()
 
 
-def train(env,RL,times=1000000):
+def train(env,RL,times=100000):
     for episode in range(0, times):
         observation = env.reset()
         while True:
@@ -458,18 +458,18 @@ def train(env,RL,times=1000000):
             if done:
                 break
 if __name__ == '__main__':
-    # task_num = [8, ]
-    # for taskNum in task_num:
-    #     parameter["taskNum"] = taskNum
-    #     from task import *
-    #     task = createTask()
-    #
-    #     # Q-learning
-    #     env = Maze(task)
-    #     RL = QLearningTable(actions=list(range(env.n_actions)))
-    #     train(env,RL)
-    #     RL.q_table.to_csv("Q_learning Table" + str(taskNum) + ".csv")
-    print(calTime("/home/zongwangz/PycharmProjects/q_learning/data/record/30million/Q_learning Table1000000"))
+    task_num = [8, ]
+    for taskNum in task_num:
+        parameter["taskNum"] = taskNum
+        from task import *
+        task = createTask()
+
+        # Q-learning
+        env = Maze(task)
+        RL = QLearningTable(actions=list(range(env.n_actions)))
+        train(env,RL)
+        RL.q_table.to_csv("Q_learning Table" + str(taskNum) + ".csv")
+    # print(calTime("/home/zongwangz/PycharmProjects/q_learning/data/record/30million/Q_learning Table1000000"))
     # print(printConvergedState("/home/zongwangz/PycharmProjects/q_learning/data/record/old/110000/Q_learning Table110000"))
     # printLog()
     # x = [250,500,1000,2000,5000]

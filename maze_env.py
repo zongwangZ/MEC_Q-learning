@@ -74,12 +74,12 @@ class Maze(gym.Env):
                     time = cloudServer.calTime(self.task.node[serial_number]["data_size"],self.task.node[serial_number]["computing_circle"],energy)
                     add_edge_time(self.task, serial_number, time)
                 if self.checkCompletion(CTaksQueue.astype(int)):
-                    reward = maxReward - time
+                    reward = maxReward - calOmegaT(self.task,CTaksQueue)
                     done = True
                     # print("complete")
                 else:
                     done = False
-                    reward = maxReward - time
+                    reward = maxReward - calOmegaT(self.task,CTaksQueue)
                 self.state[0] = CTaksQueue  # 已处理序列
                 self.state[1] = self.energy_left  # 剩余电量
                 self.state[2] = self.chooseIntensity()
