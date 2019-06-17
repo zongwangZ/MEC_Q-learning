@@ -14,7 +14,7 @@ import numpy as np
 import copy
 import ast
 from mpl_toolkits.mplot3d import Axes3D
-np.set_printoptions(suppress=True, threshold=np.nan)
+np.set_printoptions(suppress=True)
 from global_variables import *
 import sys
 import pandas as pd

@@ -78,7 +78,7 @@ def step(task_done,task,Energy,task_intensity):
         Time = findmax(task)
         if minTime > Time:
             minTime = Time
-            print(minTime)
+            # print(minTime)
         return 1
     serial_number = -1
     assert isinstance(task, networkx.DiGraph)
@@ -133,7 +133,7 @@ def doSim():
     minTime = brute_force(task)
     print(minTime)
 if __name__ == '__main__':
-    parameter["taskNum"] = 8
+    parameter["taskNum"] = 3
     task = createTask()
     bruteTime = []
     Time2 = []

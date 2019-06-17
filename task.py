@@ -127,27 +127,29 @@ def createTask():
 #     return G.critical_path_length
 
 def findmax(task):
+    global maxtime
     maxtime = 0
     path = []
     root = 0
     path.append(root)
     for node in task.succ[path[-1]]:
-        step(copy.copy(path),node,maxtime)
+        step(task,copy.copy(path),node)
     return maxtime
 
 
-def step(path,endNode,maxtime):
+def step(task,path,endNode):
     path.append(endNode)
     if task.succ[endNode] == {}:
         #路径结束,计算时间
         time = 0
         for i in range(len(path)-1):
             time+=task.get_edge_data(path[i],path[i+1])['weight']
+        global maxtime
         if time > maxtime:
             maxtime = time
     else:
         for node in task.succ[endNode]:
-            step(copy.copy(path),node,maxtime)
+            step(task,copy.copy(path),node)
 
 
 def resetTask(task):
@@ -166,7 +168,7 @@ if __name__ == '__main__':
     parameter["taskNum"] = 8
     task = createTask()
     resetTask(task)
-    findmax(task)
+    print(findmax(task))
     # print(task.pred[10])
     networkx.draw_spring(task, with_labels=True)
     plt.show()
