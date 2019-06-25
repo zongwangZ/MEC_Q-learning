@@ -54,7 +54,7 @@ def chooseIntensity():
     p = list(np.array(p) * 1 / sum(p))
     for i in range(len(p) - 1):
         p[i + 1] = p[i + 1] + p[i]
-    print(p)
+    # print(p)
     randomD = np.random.uniform()
     chosen = -1
     for i in range(len(p) - 1):
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     task = createTask()
     bruteTime = []
     Time2 = []
-    for i in range(100):
+    for i in range(10000):
         resetTask(task)
         Time2.append(brute_force(task))
     bruteTime.append(np.mean(Time2))

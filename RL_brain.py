@@ -8,6 +8,7 @@ import copy
 from global_variables import *
 import os
 import random
+from tool import *
 # pd.set_option('precision', 7)
 class QLearningTable:
     # 初始化
@@ -81,6 +82,9 @@ class QLearningTable:
         action = np.random.choice(action_list[action_list == np.max(action_list)].index)
         # print(action)
         return action
+
+    def choose_action_right(self,observation):
+        return optimal_action(observation)
 
     # 学习更新参数
     def learn(self, s, a, r, s_):

@@ -22,7 +22,7 @@ parameter={
     "W":3,#Wireless bandwidth
     "f_cs":3,#Service rate of cloud server
     "tr_cs":100,#wired transmission time for RTT to the cloud
-    "maxReward":500,
+    "maxReward":4000,
     "total_power":10000,
     "power_percentage":0.75,
     "tr_delay":1,

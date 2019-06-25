@@ -2,10 +2,10 @@
 '''
 @project:q_learning
 @author:zongwangz
-@time:19-5-17 上午9:12
+@time:19-6-17 下午7:40
 @email:zongwang.zhang@outlook.com
+测试三个任务在训练次数足够后的变化
 '''
-
 from maze_env import Maze
 from RL_brain import QLearningTable
 import matplotlib.pyplot as plt
@@ -13,21 +13,21 @@ import numpy as np
 import copy
 import ast
 from mpl_toolkits.mplot3d import Axes3D
-np.set_printoptions(suppress=True, threshold=np.nan)
+np.set_printoptions(suppress=True)
 from global_variables import *
 import sys
 import pandas as pd
 from task import *
-dir = "./data/record"
-def update(flag=False):
+dir = "./data/record" ##存放数据的根目录
+def update(env,RL,times = 100000,flag=False):
     clearData(flag)
-    for episode in range(0,100000):
+    for episode in range(0,times):
         if (episode+1)%10000 == 0:
             output(RL.q_table,episode+1)
         observation = env.reset()
         while True:
             # action = RL.choose_action(str(observation),0.1)
-            action = RL.choose_action_right(str(observation))
+            action = RL.choose_action(str(observation))
             observation_, reward, done = env.step(action)
             RL.learn(str(observation), action, reward, str(observation_))
 
@@ -70,6 +70,11 @@ def record(s,a,r,s_,done,qtable,episode):
 
 
 def optimal_action(observation):
+    '''
+    3个任务的能量充足
+    :param observation:
+    :return:
+    '''
     task_done = int(observation.split(".")[0][1:])
     es_intensity = int(observation.split(".")[2])
     if task_done == 0:
@@ -137,14 +142,21 @@ def check(state, action):
     policy_class = int((action - (serial_number - 1) * 6) / 2) + 1  # 位置(1,2,3)
     energy_rank = (action - (serial_number - 1) * 6) % 2 + 1  # 四个能量级(1,2)
     if es_intensity <= 6:
-        if policy_class != 2:
+        if policy_class != 2 or energy_rank != 1:
+            #边缘服务器工作 且传输使用更多能量
             return -1
     elif es_intensity > 6:
+        #在本地做且使用更多能量
         if energy_rank != 1 or policy_class != 1:
             return -1
     return 1
 
 def printState(episode):
+    '''
+    输出每个state最大Q和最优Q的变化
+    :param episode:
+    :return:
+    '''
     cnt = 0 #表示现在是第几步
     result = {}
     filename = dir+"/"+str(episode)+"/logFile"+str(episode)
@@ -154,7 +166,6 @@ def printState(episode):
         cnt+=1
         if line:
             log_list = [ast.literal_eval(item) for item in line.split("|")]
-            # log_list = map(lambda x: ast.literal_eval(x),line.split("|")) #这句还要检查一下
             for i in range(len(log_list)):
                 s, a, Q_sa, r, maxQ, maxAction, optQ, optAction, s_ = log_list[i]
                 if s not in result:
@@ -182,108 +193,16 @@ def printState(episode):
         # plt.show()
         plt.close()
 
-def calTime():
+
+task_num = [3, ]
+for taskNum in task_num:
+    parameter["taskNum"] = taskNum
+    from task import *
     task = createTask()
+
+    # Q-learning
     env = Maze(task)
     RL = QLearningTable(actions=list(range(env.n_actions)))
-    Time = []
-    for i in range(10000):
-        observation = env.reset()
-        while True:
-            action = RL.choose_action_real(str(observation))
-            observation_, reward, done = env.step(action)
-            observation = observation_
-            if done:
-                time = findmax(task)
-                Time.append(time)
-                break
-    print(np.mean(Time))
+    update(env,RL,30000000)
+    RL.q_table.to_csv("Q_learning Table" + str(taskNum) + "_30million")
 
-def view(filelist):
-    result = {}
-    count = {}
-    actionChoose = {}
-    cnt = 0 ##记步数
-    for filename in filelist:
-        file = open(filename, "r")
-        while True:
-            line = file.readline()
-            cnt += 1
-            if line:
-                log_list = [ast.literal_eval(item) for item in line.split("|")]
-                for i in range(len(log_list)):
-                    s, a, Q_sa, r, maxQ, maxAction, optQ, optAction, s_ = log_list[i]
-                    if s not in result:
-                        result[s] = []
-                        result[s].append([cnt, maxQ, optQ,a])
-                    else:
-                        result[s].append([cnt, maxQ, optQ,a])
-                    if s not in count:
-                        count[s] = [0,0]
-                        count[s][0] += 1
-                        if check(s,a) == 1:
-                            count[s][1] += 1
-                    else:
-                        count[s][0] += 1
-                        if check(s, a) == 1:
-                            count[s][1] += 1
-                    if s not in actionChoose:
-                        actionChoose[s] = []
-                        if a == maxAction:
-                            actionChoose[s].append([cnt,a])
-                    else:
-                        if a == maxAction:
-                            actionChoose[s].append([cnt,a])
-            else:
-                break
-    print(count)
-
-    #plot
-    for key in result:
-        x = []
-        y1 = [] #max
-        y2 = [] #opt
-
-        x_a = []
-        a = []
-        for item in result[key]:
-            x.append(item[0])
-            y1.append(item[1])
-            y2.append(item[2])
-
-        for item in actionChoose[key]:
-            x_a.append(item[0])
-            a.append(item[1])
-        fig,ax1 = plt.subplots()
-        ax2 = ax1.twinx()
-        plt.title(key)
-        ax1.plot(x,y1,label="max")
-        ax1.plot(x,y2,label="opt")
-        ax2.scatter(x_a,a,label="action",s=4)
-
-        plt.legend()
-        plt.savefig("./"+key+".png")
-        # plt.show()
-        plt.close()
-
-
-if __name__ == '__main__':
-    # task_num = [3, ]
-    # for taskNum in task_num:
-    #     parameter["taskNum"] = taskNum
-    #     from task import *
-    #     task = createTask()
-    #
-    #     # Q-learning
-    #     env = Maze(task)
-    #     RL = QLearningTable(actions=list(range(env.n_actions)))
-    #     update()
-    #     RL.q_table.to_csv("Q_learning Table" + str(taskNum) + ".csv")
-    # printState(10000)
-    # calTime()
-    filelist = []
-
-    for i in range(59,60):
-        filename = "/home/zongwangz/PycharmProjects/q_learning/data/record/old/"+str((i+1)*10000)+"/"+"logFile"+str((i+1)*10000)
-        filelist.append(filename)
-    view(filelist)

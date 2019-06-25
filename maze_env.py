@@ -186,13 +186,13 @@ class Maze(gym.Env):
         """
         flag2 = False
         if self.energy_left >= parameter["total_power"]*(1-parameter["power_percentage"]):
-            if policy_class == 1 and energy_rank == 1 and self.energy_left >= energies[0][0]:
+            if policy_class == 1 and energy_rank == 1 and self.energy_left-parameter["total_power"]*(1-parameter["power_percentage"]) >= energies[0][0]:
                 flag2 = True
-            elif policy_class == 1 and energy_rank == 2 and self.energy_left >= energies[0][1]:
+            elif policy_class == 1 and energy_rank == 2 and self.energy_left-parameter["total_power"]*(1-parameter["power_percentage"]) >= energies[0][1]:
                 flag2 = True
-            elif policy_class != 1 and energy_rank == 1 and self.energy_left >= energies[1][0]:
+            elif policy_class != 1 and energy_rank == 1 and self.energy_left-parameter["total_power"]*(1-parameter["power_percentage"]) >= energies[1][0]:
                 flag2 = True
-            elif policy_class != 1 and energy_rank == 2 and self.energy_left >= energies[1][1]:
+            elif policy_class != 1 and energy_rank == 2 and self.energy_left-parameter["total_power"]*(1-parameter["power_percentage"]) >= energies[1][1]:
                 flag2 = True
         return flag2
 

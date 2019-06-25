@@ -17,35 +17,35 @@ from run_this3 import *
 
 # printConvergedState("/media/zongwangz/RealPAN-13438811621/myUbuntu/q_learning/q_learning/data/record/100000/Q_learning Table100000")
 
-# filename1 = "/home/zongwangz/桌面/ppt/counts/counts"
-# filename2 = "/home/zongwangz/桌面/ppt/convergedStates/convergedStates"
-# counts = ast.literal_eval(open(filename1,"r").readline())
-# convergedStates = ast.literal_eval(open(filename2,"r").readline())
-# x = range(len(counts))
-# y1 = []
-# y2 = []
-# y3 =[]
-# for key in counts:
-#     y1.append(counts[key][0])
-#     y2.append(counts[key][1])
-#     y3.append(convergedStates[key])
-# # print(x)
-# # print(y1)
-# # print(y2)
-# # print(y3)
-# # y1 = np.log10(y1)
-# # y2 = np.log10(y2)
-# fig, ax1 = plt.subplots()
-# ax2 = ax1.twinx()
-# ax1.bar(x,np.array(y1)/100000,label="#Choose",color="blue")
-# ax1.bar(x,np.array(y2)/100000,label="#opt",color="red")
-# ax2.scatter(x,y3,label="state",color="black")
-# ax1.set_ylabel("#hit",fontdict={'size':15})
-# ax2.set_ylabel("state value",fontdict={'size':15})
-# plt.xticks([0,5,10,15,20,25,30,35,39])
-# ax2.set_yticks([-1,1])
-# plt.xlabel("state",fontdict={'size':15})
-# plt.show()
+filename1 = "/home/zongwangz/PycharmProjects/q_learning/result/count1"
+filename2 = "/home/zongwangz/PycharmProjects/q_learning/result/convergedstate1"
+counts = ast.literal_eval(open(filename1,"r").readline())
+convergedStates = ast.literal_eval(open(filename2,"r").readline())
+x = range(len(counts))
+y1 = []
+y2 = []
+y3 =[]
+for key in counts:
+    y1.append(counts[key][0])
+    y2.append(counts[key][1])
+    y3.append(convergedStates[key])
+# print(x)
+# print(y1)
+# print(y2)
+# print(y3)
+# y1 = np.log10(y1)
+# y2 = np.log10(y2)
+fig, ax1 = plt.subplots()
+ax2 = ax1.twinx()
+ax1.bar(x,np.array(y1)/5000000,label="# Choose",color="blue")
+ax1.bar(x,np.array(y2)/5000000,label="# opt",color="red")
+ax2.scatter(x,y3,label="state",color="black")
+ax1.set_ylabel("# hit",fontdict={'size':18})
+ax2.set_ylabel("state value",fontdict={'size':18})
+plt.xticks([0,5,10,15,20,25,30,35,39])
+ax2.set_yticks([-1,1])
+plt.xlabel("state",fontdict={'size':15})
+plt.show()
 
 # for i in [3,4,5,6,7,8]:
 #     parameter["taskNum"] = i
@@ -135,30 +135,30 @@ from run_this3 import *
 2076 37
 48.264
 '''
-x1 = [1, 2, 3, 4, 6, 10, 14, 16, 17, 24, 26, 27, 44, 514, 517, 794, 813, 840, 853, 1040, 1699, 1732, 1811, 1831, 1962, 2076,3000]
-x2 = [1, 2, 3, 4, 6, 10, 14, 16, 17, 24, 26, 27, 44, 514, 517, 794, 813, 840, 853, 1040, 1699, 1732, 1811, 1831, 1962, 2076]
-y2 = [378.9575, 318.355, 284.393, 244.5885, 200.993, 119.206, 103.4755, 102.924, 103.859, 81.0765, 78.029, 75.3275, 75.3245, 61.81, 61.303, 60.585, 59.3945, 57.59, 55.1385, 50.826, 50.7005, 50.667, 49.3905, 49.125, 49.013, 48.264]
-y1 = [10, 11, 12, 14, 15, 17, 18, 19, 20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,37]
+# x1 = [1, 7, 14, 20, 112, 123, 132, 148, 183, 215, 216, 228, 246, 336, 447, 853, 1714, 1716]
+# x2 = [1, 7, 14, 20, 112, 123, 132, 148, 183, 215, 216, 228, 246, 336, 447, 853, 1714, 1716]
+# y2 = [365.9695, 251.275, 246.478, 182.1475, 91.6215, 91.189, 91.0145, 89.9225, 87.5825, 86.2395, 86.9475, 85.118, 75.4505, 75.5365, 76.1735, 75.656, 74.4175, 75.506]
+# y1 = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+# # plt.subplots()
+# # plt.plot(x1,y1,"o-")
+# # plt.xlabel("#episode",fontdict={'size':15})
+# # plt.ylabel("#converged state",fontdict={'size':15})
+# # plt.xlim((1,3001))
+# # plt.annotate(s='37',xy=(2076,37),xytext=(2200,30),
+# #              arrowprops={'arrowstyle':'->'})
+# # plt.show()
+# # plt.close()
+# #
+# max = 1000.451
+# y2 = np.log10(y2)/np.log10(max)
 # plt.subplots()
-# plt.plot(x1,y1,"o-")
+# plt.plot(x2,y2,".-")
 # plt.xlabel("#episode",fontdict={'size':15})
-# plt.ylabel("#converged state",fontdict={'size':15})
+# plt.ylabel("consumed_time",fontdict={'size':15})
 # plt.xlim((1,3001))
-# plt.annotate(s='37',xy=(2076,37),xytext=(2200,30),
+# plt.annotate(s=str(round(y2[-1],3)),xy=(2076,y2[-1]),xytext=(2500,y2[-1]),
 #              arrowprops={'arrowstyle':'->'})
 # plt.show()
-# plt.close()
-#
-max = 947.1545
-y2 = np.log10(y2)/np.log10(max)
-plt.subplots()
-plt.plot(x2,y2,".-")
-plt.xlabel("#episode",fontdict={'size':15})
-plt.ylabel("consumed_time",fontdict={'size':15})
-plt.xlim((1,3001))
-plt.annotate(s=str(round(y2[-1],3)),xy=(2076,y2[-1]),xytext=(2500,y2[-1]),
-             arrowprops={'arrowstyle':'->'})
-plt.show()
 
 
 #针对未收敛的三个状态 输出他们经历的次数 [   3. 4300.   10.]   [   1. 4400.   10.]  [   3. 4300.    8.]
